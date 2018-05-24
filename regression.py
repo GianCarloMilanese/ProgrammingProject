@@ -4,6 +4,3 @@ class LinearRegression(object):
         self.features = features
         self.target = target
         self.m = m
-
-
-
