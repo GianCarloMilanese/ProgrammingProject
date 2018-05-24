@@ -5,4 +5,4 @@ class LinearRegression(object):
         self.target = target
         self.m = m
 
-# Test
+# Test again
