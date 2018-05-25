@@ -5,12 +5,12 @@ from sklearn import datasets
 
 boston = datasets.load_boston()
 features = boston.data
-#features = np.vstack(features)
+features = np.vstack(features[:, 0])
 target = boston.target
 
 class LinearRegression(object):
 
-    def __init__(self, features=np.array([]), target=np.array([]), initial_parameters=None, learning_rate=0.5): #maybe no need for empty array
+    def __init__(self, features=np.array([]), target=np.array([]), initial_parameters=None, learning_rate=0.0005): #maybe no need for empty array
         self.num_features = len(features[0]) #len of first row
         self.num_examples = len(features) # = 506
         self.initial_parameters = np.array(initial_parameters) #if initial parameters = undefined, we need to randomly assign?
@@ -59,12 +59,12 @@ class LinearRegression(object):
             print('cost', self.cost())
             self.update_parameters()
             print('after:', self.initial_parameters)
-            if i%10 != 0:
-                plt.plot([feature[1] for feature in self.features], self.target, color='g', linewidth = 0, marker='o')
-                xs = np.linspace(0, 3, 10)
+            if i%100 == 0:
+                plt.plot([feature[1] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
+                xs = np.linspace(0, 100, 100)
                 theta0 = self.initial_parameters[0]
                 theta1 = self.initial_parameters[1]
-                ys = [theta0 + theta1*x for x in xs]
+                ys = [theta0 + theta1*x for x in xs] #this is the h function
                 plt.plot(xs, ys, color='r')
                 plt.show()
         cost_array=np.array(cost_list)
@@ -74,8 +74,7 @@ class LinearRegression(object):
         plt.show()
 
 
-a = LinearRegression(features, target, [-100, 11987652, 123123100, 131300,  1012345678900, -34561, 13456780,
-                                        -14345600, -234100, 100, -1040,  198765400, -12345622, 234562])
+a = LinearRegression(features, target, [10, 11])
 print(a.features)
 print(a.target)
 
@@ -103,4 +102,4 @@ print(b.initial_parameters)
 b.update_parameters()
 print(b.initial_parameters)
 
-b.gradient_descent(100)
+a.gradient_descent(1000)
