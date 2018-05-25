@@ -10,7 +10,7 @@ target = boston.target
 
 class LinearRegression(object):
 
-    def __init__(self, features=np.array([]), target=np.array([]), initial_parameters=None, learning_rate=0.0005): #maybe no need for empty array
+    def __init__(self, features=np.array([]), target=np.array([]), initial_parameters=None, learning_rate=0.05): #maybe no need for empty array
         self.num_features = len(features[0]) #len of first row
         self.num_examples = len(features) # = 506
         self.initial_parameters = np.array(initial_parameters) #if initial parameters = undefined, we need to randomly assign?
@@ -61,7 +61,7 @@ class LinearRegression(object):
             print('after:', self.initial_parameters)
             if i%100 == 0:
                 plt.plot([feature[1] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
-                xs = np.linspace(0, 100, 100)
+                xs = np.linspace(0, max(np.hstack(self.features)), 100)
                 theta0 = self.initial_parameters[0]
                 theta1 = self.initial_parameters[1]
                 ys = [theta0 + theta1*x for x in xs] #this is the h function
@@ -70,11 +70,11 @@ class LinearRegression(object):
         cost_array=np.array(cost_list)
         #print(cost_array)
         plt.plot(range(repetitions),cost_array)
-        plt.axis([0, repetitions, 0, 4e+22])
+        #plt.axis([0, repetitions, 0, 4e+22])
         plt.show()
 
 
-a = LinearRegression(features, target, [10, 11])
+a = LinearRegression(features, target, [10, 11], 0.00005)
 print(a.features)
 print(a.target)
 
@@ -92,14 +92,16 @@ plt.show()"""
 
 #Define a graph - iterations, cost function (to see that it is decreasing)
 
-matrix = np.array([[0], [1], [2]])
-t = np.array([0,1,2])
+matrix = np.array([[0], [1], [2], [3], [4], [5], [6], [7], [8], [9], [10]])
+t = np.array([20, 18, 22, 15, 13, 17, 10, 12, 9, 4, 3])
 
-b = LinearRegression(matrix, t, [1,2])
+b = LinearRegression(matrix, t, [1,2], 0.05)
 
 #b.gradient_descent(100)
 print(b.initial_parameters)
 b.update_parameters()
 print(b.initial_parameters)
 
-a.gradient_descent(1000)
+#a.gradient_descent(1000)
+
+b.gradient_descent(500)
