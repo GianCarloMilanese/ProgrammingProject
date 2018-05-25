@@ -1,9 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import datasets
+
+boston = datasets.load_boston()
+features = boston.data
+target = boston.target
 
 class LinearRegression(object):
 
-    def __init__(self, features=np.array([]), target=np.array([]), initial_parameters=None, learning_rate=0.1): #maybe no need for empty array
+    def __init__(self, features=np.array([]), target=np.array([]), initial_parameters=None, learning_rate=0.05): #maybe no need for empty array
         self.num_features = len(features[0]) #len of first row
         self.num_examples = len(features) # = 506
         self.initial_parameters = np.array(initial_parameters) #if initial parameters = undefined, we need to randomly assign?
@@ -45,17 +51,19 @@ class LinearRegression(object):
         self.initial_parameters = np.array(new_parameter_list)
 
     def gradient_descent(self, repetitions):
+        cost_list=[]
         for i in range(repetitions):
-            print('before:', self.initial_parameters)
+            #print('before:', self.initial_parameters)
+            cost_list.append(self.cost())
             self.update_parameters()
             print('after:', self.initial_parameters)
+        cost_array=np.array(cost_list)
+        print(cost_array)
+        plt.plot(range(repetitions),cost_array)
+        plt.show()
 
 
-
-features = np.array([[1], [2], [3]])
-target = np.array([1 ,2 ,3])
-
-a = LinearRegression(features, target, [0.2,0.3])
+a = LinearRegression(features, target, [1,2,3,1,3,1,3,1,2,1,1,1,1,1])
 print(a.features)
 print(a.target)
 
@@ -64,7 +72,7 @@ print(a.initial_parameters)
 
 print('cost:', a.cost())
 #print in terms of rounds?
-a.gradient_descent(5000)
+a.gradient_descent(1000)
 
 """plt.semilogy(range(10), a.cost)
 plt.title("L")
