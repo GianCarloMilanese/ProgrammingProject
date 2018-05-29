@@ -75,8 +75,8 @@ class LinearRegression(object):
     def scaling(self):
         m = np.zeros((self.num_examples, self.num_features + 1)) + 1
         for i in range(len(self.features[0])):
-            maxx = max(self.features[:,i])
-            m[:, i] = self.features[:,i]/maxx
+            maxx = max(self.features[:, i])
+            m[:, i] = self.features[:, i]/maxx
         self.features = m
 
 
