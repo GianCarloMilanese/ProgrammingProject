@@ -136,3 +136,4 @@ features_without_chas = np.delete(boston.data, 3, 1) # deletes column with index
 print(features_without_chas)
 
 print(len(features_without_chas[0]))
+
