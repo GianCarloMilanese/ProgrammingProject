@@ -1,11 +1,10 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import datasets
 
 boston = datasets.load_boston()
 features = boston.data
-features = np.vstack(features[:, 0])
+features_subset = np.vstack(features[:, 0])
 target = boston.target
 
 class LinearRegression(object):
@@ -56,11 +55,11 @@ class LinearRegression(object):
         for i in range(repetitions):
             #print('before:', self.initial_parameters)
             cost_list.append(self.cost())
-            print('cost', self.cost())
+            #print('cost', self.cost())
             self.update_parameters()
-            print('after:', self.initial_parameters)
+            #print('after:', self.initial_parameters)
             if i%100 == 0:
-                plt.plot([feature[1] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
+                plt.plot([feature[2] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
                 xs = np.linspace(0, max(np.hstack(self.features)), 100)
                 theta0 = self.initial_parameters[0]
                 theta1 = self.initial_parameters[1]
@@ -73,8 +72,17 @@ class LinearRegression(object):
         #plt.axis([0, repetitions, 0, 4e+22])
         plt.show()
 
+    def scaling(self):
+        m = np.zeros((self.num_examples, self.num_features + 1)) + 1
+        for i in range(len(self.features[0])):
+            maxx = max(self.features[:,i])
+            m[:, i] = self.features[:,i]/maxx
+        self.features = m
 
-a = LinearRegression(features, target, [10, 11], 0.00005)
+
+
+
+a = LinearRegression(features_subset, target, [10, 11], 0.00005)
 print(a.features)
 print(a.target)
 
@@ -95,7 +103,7 @@ plt.show()"""
 matrix = np.array([[0], [1], [2], [3], [4], [5], [6], [7], [8], [9], [10]])
 t = np.array([20, 18, 22, 15, 13, 17, 10, 12, 9, 4, 3])
 
-b = LinearRegression(matrix, t, [1,2], 0.05)
+b = LinearRegression(matrix, t, [5,10], 0.03)
 
 #b.gradient_descent(100)
 print(b.initial_parameters)
@@ -104,4 +112,27 @@ print(b.initial_parameters)
 
 #a.gradient_descent(1000)
 
-b.gradient_descent(500)
+#b.gradient_descent(500)
+
+c = LinearRegression(features, target, [10, 11, 10, 10, 11, 10, 10, 11, 10, 10, 11, 10, 10, 10], 0.000005)
+
+#b.gradient_descent(500)
+
+#print(c.features[:,1])
+
+#b.gradient_descent(500)
+
+#c.scaling()
+
+#print(b.num_examples)
+#print(b.num_features)
+
+#print(c.features[:,1])
+
+#c.gradient_descent(500)
+
+features_without_chas = np.delete(boston.data, 3, 1) # deletes column with index 3
+
+print(features_without_chas)
+
+print(len(features_without_chas[0]))
