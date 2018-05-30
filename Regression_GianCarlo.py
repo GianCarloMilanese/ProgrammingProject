@@ -72,6 +72,7 @@ class LinearRegression(object):
             cost_before = self.cost()
             cost_list.append(self.cost())
             self.update_parameters(learning_rate)
+            """
             if repetitions%500 == 0:   # this plots the hypothesis function; works for the basic case with one feature
                 for i in range(1, len(self.features[0])):
                     plt.plot([feature[i] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
@@ -82,6 +83,7 @@ class LinearRegression(object):
                     plt.plot(xs, ys, color='r')
                     plt.title('Iteration {}, feature number {}'.format(repetitions, i))
                     plt.show()
+            """
             repetitions += 1
             if cost_before - self.cost() < 0.0001: # tests convergence
                 for i in range(1, len(self.features[0])):
@@ -105,6 +107,11 @@ class LinearRegression(object):
             maxx = max(self.features[:, i])
             m[:, i] = (self.features[:, i]-average)/maxx
         self.features = m
+
+    def r2(self):
+
+
+
 
 
 boston = datasets.load_boston()
@@ -139,6 +146,8 @@ print(min(a.features[:,1]))
 print(max(a.features[:,1]))
 print(a.features)
 
+d = LinearRegression(features_without_chas, target)
+
 #a.gradient_descent2(0.01)
-c.scaling()
-c.gradient_descent2(0.5)
+d.scaling()
+d.gradient_descent2(0.5)
