@@ -54,18 +54,21 @@ class LinearRegression(object):
         cost_list=[]
         for i in range(repetitions):
             #print('before:', self.initial_parameters)
+            c = self.cost()
             cost_list.append(self.cost())
             #print('cost', self.cost())
             self.update_parameters()
             #print('after:', self.initial_parameters)
-            if i%100 == 0:
-                plt.plot([feature[2] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
+            if i%(repetitions/5) == 0:
+                plt.plot([feature[1] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
                 xs = np.linspace(0, max(np.hstack(self.features)), 100)
                 theta0 = self.initial_parameters[0]
                 theta1 = self.initial_parameters[1]
                 ys = [theta0 + theta1*x for x in xs] #this is the h function
                 plt.plot(xs, ys, color='r')
                 plt.show()
+            if c - self.cost() < 0.0001:
+                print('convergence at iteration', i)
         cost_array=np.array(cost_list)
         #print(cost_array)
         plt.plot(range(repetitions),cost_array)
@@ -82,7 +85,7 @@ class LinearRegression(object):
 
 
 
-a = LinearRegression(features_subset, target, [10, 11], 0.00005)
+a = LinearRegression(features_subset, target, [10, 11], 0.0005)
 print(a.features)
 print(a.target)
 
@@ -129,7 +132,7 @@ c = LinearRegression(features, target, [10, 11, 10, 10, 11, 10, 10, 11, 10, 10, 
 
 #print(c.features[:,1])
 
-#c.gradient_descent(500)
+a.gradient_descent(10000)
 
 features_without_chas = np.delete(boston.data, 3, 1) # deletes column with index 3
 
