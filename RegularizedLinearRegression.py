@@ -139,7 +139,31 @@ important_features = np.delete(boston.data, [2, 6], 1)
 
 c = RegularizedLinearRegression(features, target)  # full boston dataset
 
-c.scaling()
-c.gradient_descent2(0.5, 0)
-print(c.r2())
-print(c.initial_parameters[0], np.mean(c.target))
+#c.scaling()
+#c.gradient_descent2(0.5, 0)
+#print(c.r2())
+#print(c.initial_parameters[0], np.mean(c.target))
+
+lvls = [len(set(v)) for v in features.T]
+names = boston["feature_names"]
+
+print([(l, n) for l, n in zip(lvls, names)])
+
+
+cs = features[:, 0]
+bs = features[:, 11]
+
+sort_pairs = sorted(zip(bs, cs), key=lambda tup: tup[0])
+
+sort_bs, sort_cs = list(zip(*sort_pairs))
+
+plt.plot(sort_bs, sort_cs, ".")
+
+plt.ylabel("Prop of crime")
+plt.xlabel("Prop of blacks")
+plt.legend()
+plt.title("Correlation")
+plt.show()
+
+plt.plot(range(len(target)), target, linewidth = 0, marker = 'o')
+plt.show()
