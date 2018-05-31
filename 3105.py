@@ -103,14 +103,13 @@ distances = np.vstack(features[:, 7])
 
 logdis= np.sqrt(distances)
 featureswlogdis = np.append(features, logdis, 1)
-
 logtarget = np.log(target)
 
 c = LinearRegression(featureswlogdis, logtarget)
 
 c.scaling()
 c.gradient_descent2(1)
-print(c.parameters[0], sum(c.target)/c.num_examples)
+print(c.parameters[0], sum(c.target)/c.num_examples) # test if theta0 = average
 #print(c.target)
 #print(c.h_function())
 print(c.r2())
