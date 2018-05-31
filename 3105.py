@@ -33,7 +33,7 @@ class LinearRegression(object):
         return (np.sum(e))/self.num_examples
 
     def update_parameters(self, learning_rate=0.01):
-        new_parameter_list = [] #simultaneous update of parameters
+        new_parameter_list = []  #simultaneous update of parameters
         for i in range(len(self.parameters)):
             new_parameter_list.append(self.parameters[i] -
                                       learning_rate*self.cost_der(i))
@@ -107,6 +107,9 @@ featureswlogdis = np.append(features, logdis, 1)
 logtarget = np.log(target)
 
 c = LinearRegression(featureswlogdis, logtarget)
+
+print(c.target)
+print(c.h_function())
 
 c.scaling()
 c.gradient_descent(1)
