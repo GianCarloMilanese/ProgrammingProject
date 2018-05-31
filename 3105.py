@@ -108,16 +108,11 @@ logtarget = np.log(target)
 c = LinearRegression(featureswlogdis, logtarget)
 
 c.scaling()
-c.gradient_descent(.9)
-print(c.parameters[0], sum(c.target)/c.num_examples) # test if theta0 = average
+c.gradient_descent(1)
+print(c.parameters[0], np.mean(c.target))  # test if theta0 = average
 #print(c.target)
 #print(c.h_function())
 print(c.r2())
-
-
-
-
-#print(c.initial_parameters[0], np.mean(c.target))
 
 
 """
