@@ -47,8 +47,8 @@ class LinearRegression(object):
             cost_list.append(self.cost())
             self.update_parameters(learning_rate)
 
-            if repetitions % 20000 == 0 and repetitions != 0:   # this plots the hypothesis function; works for the basic case with one feature
-                for i in range(1, len(self.features[0])):
+            if repetitions % 10000 == 0 and repetitions != 0:   # this plots the hypothesis function; works for the basic case with one feature
+                for i in range(14, len(self.features[0])):
                     plt.plot([feature[i] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
                     theta0 = self.parameters[0]
                     theta1 = self.parameters[i]
@@ -59,7 +59,7 @@ class LinearRegression(object):
                     plt.show()
             repetitions += 1
             if np.abs(cost_before - self.cost()) < 0.0001:  # tests convergence
-                for i in range(1, len(self.features[0])):
+                for i in range(14, len(self.features[0])):
                     plt.plot([feature[i] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
                     theta0 = self.parameters[0]
                     theta1 = self.parameters[i]
@@ -101,14 +101,14 @@ RN = np.vstack(features[:, 5])
 AGE = np.vstack(features[:, 6])
 distances = np.vstack(features[:, 7])
 
-logdis= np.sqrt(distances)
+logdis= np.log(distances)
 featureswlogdis = np.append(features, logdis, 1)
 logtarget = np.log(target)
 
 c = LinearRegression(featureswlogdis, logtarget)
 
 c.scaling()
-c.gradient_descent2(1)
+c.gradient_descent2(.9)
 print(c.parameters[0], sum(c.target)/c.num_examples) # test if theta0 = average
 #print(c.target)
 #print(c.h_function())
