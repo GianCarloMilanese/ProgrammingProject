@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import datasets
-
-
+from scipy.stats import pearsonr
 class LinearRegression(object):
 
     def __init__(self, features=np.array([]), target=np.array([])): #maybe no need for empty array
@@ -48,7 +47,7 @@ class LinearRegression(object):
             self.update_parameters(learning_rate)
 
             if repetitions % 5000 == 0 and repetitions != 0:   # this plots the hypothesis function; works for the basic case with one feature
-                for i in range(15, len(self.features[0])):
+                for i in range(30, len(self.features[0])):
                     plt.plot([feature[i] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
                     theta0 = self.parameters[0]
                     theta1 = self.parameters[i]
@@ -61,7 +60,7 @@ class LinearRegression(object):
                     plt.show()
             repetitions += 1
             if np.abs(cost_before - self.cost()) < 0.0001:  # tests convergence
-                for i in range(15, len(self.features[0])):
+                for i in range(30, len(self.features[0])):
                     plt.plot([feature[i] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
                     theta0 = self.parameters[0]
                     theta1 = self.parameters[i]
@@ -117,6 +116,7 @@ LSTAT = np.vstack(features[:, 12])
 
 FEATURES = [CRIM, ZN, INDUS, CHAS, NOX, RM, AGE, DIS, RAD, TAX, PTRATIO, B, LSTAT]
 
+overxcrim = 1/CRIM
 logdis= np.log(DIS)
 lograd = np.log(RAD)
 featureswlogdis = np.append(features, logdis, 1)
@@ -124,16 +124,44 @@ logtarget = np.log(target)
 important_features = np.delete(features, [2, 6], 1)
 impfeatwlogdis = np.append(important_features, logdis, 1)
 featlogdislograd = np.append(featureswlogdis, lograd, 1)
+withoverx = np.append(featlogdislograd, overxcrim, 1)
+CRIMSCALED = (CRIM - np.mean(CRIM))/max(CRIM)
+LSTATSCALED = (LSTAT - np.mean(LSTAT))/max(LSTAT)
+
+def add_interaction(features, f1, f2):
+    f1scaled = (f1 - np.mean(f1))/max(f1)
+    f2scaled = (f2 - np.mean(f2)) / max(f2)
+    p = f1scaled*f2scaled
+    return np.append(features, p, 1)
+
+f = featureswlogdis
+f1 = add_interaction(f, AGE, NOX)
+f2 = add_interaction(f1, RAD, TAX)
+f3 = add_interaction(f2, INDUS, NOX)
+#f4 = add_interaction(f3, NOX, DIS)
+f4 = add_interaction(f3, RM, LSTAT)
+f5 = add_interaction(f4, AGE, DIS)
+f6 = add_interaction(f5, LSTAT, AGE)
+f7 = add_interaction(f6, TAX, NOX)
+f8 = add_interaction(f7, NOX, LSTAT)
+f9 = add_interaction(f8, INDUS, LSTAT)
+f10 = add_interaction(f9, INDUS, DIS)
+f11 = add_interaction(f10, INDUS, AGE)
+f12 = add_interaction(f11, ZN, DIS)
+f13 = add_interaction(f12, TAX, INDUS)
 
 
-
-c = LinearRegression(featlogdislograd, logtarget)
+c = LinearRegression(f13, logtarget)
 d = LinearRegression(LSTAT, target)
+
 
 c.scaling()
 c.gradient_descent(1)
 print(c.parameters[0], np.mean(c.target))  # test if theta0 = average
 print(c.r2())
+#print(c.parameters)
+
+
 
 def plot_feature(feature, xlabel='feature_name', ylabel='PRICE'):
     plt.plot(feature, target, ".")
@@ -141,8 +169,16 @@ def plot_feature(feature, xlabel='feature_name', ylabel='PRICE'):
     plt.ylabel(ylabel)
     plt.show()
 
-def plot_sorted_feature(feature, xlabel='feature_name', ylabel='PRICE'):
+def plot_sorted_feature_x(feature, xlabel='feature_name', ylabel='PRICE'):
     sort_pairs = sorted(zip(feature, target), key=lambda tup: tup[0])
+    sort_bs, sort_cs = list(zip(*sort_pairs))
+    plt.plot(sort_bs, sort_cs, ".")
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.show()
+
+def plot_sorted_feature_y(feature, xlabel='feature_name', ylabel='PRICE'):
+    sort_pairs = sorted(zip(feature, target), key=lambda tup: tup[1])
     sort_bs, sort_cs = list(zip(*sort_pairs))
     plt.plot(sort_bs, sort_cs, ".")
     plt.xlabel(xlabel)
@@ -151,13 +187,32 @@ def plot_sorted_feature(feature, xlabel='feature_name', ylabel='PRICE'):
 
 FEATURE_NAMES = ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']
 
+CRIMSCALED = (CRIM - np.mean(CRIM))/max(CRIM)
+LSTATSCALED = (LSTAT - np.mean(LSTAT))/max(LSTAT)
+
+#plot_sorted_feature_x(np.log(CRIMSCALED*LSTATSCALED), xlabel="CRIM*LSTAT")
+
 """
 for i in range(len(FEATURES)):
-    #print(zip(FEATURES[i], target) == sorted(zip(FEATURES[i], target), key=lambda tup: tup[0]))
-    #plot_feature(FEATURES[i], FEATURE_NAMES[i])
-    pass
-    plot_sorted_feature(FEATURES[i], FEATURE_NAMES[i])
+    for j in range(len(FEATURES)):
+        if not i ==j:
+            r, p_val = pearsonr(FEATURES[i], FEATURES[j])
+            print(FEATURE_NAMES[i], FEATURE_NAMES[j], ": ", r, p_val)
+            if r < -0.5 or r > 0.5:
+                plt.plot(FEATURES[i], FEATURES[j], ".")
+                plt.xlabel(FEATURE_NAMES[i])
+                plt.ylabel(FEATURE_NAMES[j])
+                plt.show()
+
+plt.plot(LSTATSCALED, CRIMSCALED, ".")
+plt.show()
+
+for i in range(len(FEATURES)):
+    plot_sorted_feature_x(FEATURES[i], FEATURE_NAMES[i])
+
+
 """
+
 
 
 
