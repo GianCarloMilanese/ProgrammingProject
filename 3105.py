@@ -39,7 +39,7 @@ class LinearRegression(object):
                                       learning_rate*self.cost_der(i))
         self.parameters = np.array(new_parameter_list)
 
-    def gradient_descent2(self, learning_rate):
+    def gradient_descent(self, learning_rate):
         repetitions = 0
         cost_list = []
         while True:
@@ -108,7 +108,7 @@ logtarget = np.log(target)
 c = LinearRegression(featureswlogdis, logtarget)
 
 c.scaling()
-c.gradient_descent2(.9)
+c.gradient_descent(.9)
 print(c.parameters[0], sum(c.target)/c.num_examples) # test if theta0 = average
 #print(c.target)
 #print(c.h_function())
