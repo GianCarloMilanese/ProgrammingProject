@@ -47,7 +47,7 @@ class LinearRegression(object):
             cost_list.append(self.cost())
             self.update_parameters(learning_rate)
 
-            if repetitions % 10000 == 0 and repetitions != 0:   # this plots the hypothesis function; works for the basic case with one feature
+            if repetitions % 5000 == 0 and repetitions != 0:   # this plots the hypothesis function; works for the basic case with one feature
                 for i in range(14, len(self.features[0])):
                     plt.plot([feature[i] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
                     theta0 = self.parameters[0]
@@ -95,13 +95,14 @@ class LinearRegression(object):
 
 boston = datasets.load_boston()
 features = boston.data
-features_subset = np.vstack(features[:, 0])
 target = boston.target
+
+CRIM = np.vstack(features[:, 0])
 RN = np.vstack(features[:, 5])
 AGE = np.vstack(features[:, 6])
-distances = np.vstack(features[:, 7])
+DIS = np.vstack(features[:, 7])
 
-logdis= np.log(distances)
+logdis= np.log(DIS)
 featureswlogdis = np.append(features, logdis, 1)
 logtarget = np.log(target)
 
@@ -110,8 +111,6 @@ c = LinearRegression(featureswlogdis, logtarget)
 c.scaling()
 c.gradient_descent(1)
 print(c.parameters[0], np.mean(c.target))  # test if theta0 = average
-#print(c.target)
-#print(c.h_function())
 print(c.r2())
 
 
