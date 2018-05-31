@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import datasets
-import warnings
-import math
 
 
 class LinearRegression(object):
@@ -16,7 +14,6 @@ class LinearRegression(object):
         self.features = m #not number of features, just a placeholder
         self.target = target
 
-
     "The hypothesis function = theta^t * x"
     def h_function(self):
         return np.dot(self.parameters, np.transpose(self.features))
@@ -27,7 +24,6 @@ class LinearRegression(object):
         return np.sum((self.h_function()-target)**2)
 
     def cost_der(self, parameter_index):
-        #not sure if parameter_index needs to be in there?
         """
         returns the derivative of the cost function wrt the parameter with index parameter_index
         :param parameter_index: the index of the parameter
@@ -51,7 +47,7 @@ class LinearRegression(object):
             cost_list.append(self.cost())
             self.update_parameters(learning_rate)
 
-            if repetitions%20000 == 0:   # this plots the hypothesis function; works for the basic case with one feature
+            if repetitions % 20000 == 0 and repetitions != 0:   # this plots the hypothesis function; works for the basic case with one feature
                 for i in range(1, len(self.features[0])):
                     plt.plot([feature[i] for feature in self.features], self.target, color='g', linewidth=0, marker='o')
                     theta0 = self.parameters[0]
@@ -110,8 +106,8 @@ featureswlogdis = np.append(features, logdis, 1)
 
 logtarget = np.log(target)
 
-c = LinearRegression(featureswlogdis, logtarget)  # full boston dataset
-#print(logtarget)
+c = LinearRegression(featureswlogdis, logtarget)
+
 c.scaling()
 c.gradient_descent2(1)
 print(c.parameters[0], sum(c.target)/c.num_examples)
