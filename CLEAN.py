@@ -5,14 +5,17 @@ from sklearn import datasets
 
 class LinearRegression(object):
 
-    def __init__(self, features=np.array([]), target=np.array([])):
+    def __init__(self, features=np.array([]), target=np.array([]), feat_names = None):
         """Constructor
 
         :param features: A matrix of features
         :param target: An array
         """
+
         # the number of features
         self.num_features = len(features[0])
+        # the names of the features
+        self.feat_names = feat_names if feat_names is not None else ['Feature {}'.format(i+1) for i in range(self.num_features)]
         # the number of examples
         self.num_examples = len(features)
         # an array of weights
@@ -58,13 +61,16 @@ class LinearRegression(object):
                                       learning_rate*self.cost_der(i))
         self.parameters = np.array(new_parameter_list)
 
-    def plot_features_h(self, title='', ran=None):
+    def plot_features_h(self, title='', ran=None ):
         """ Shows plots of features and of the hypothesis function wrt that feature
 
         :param title: title of the plot
+        :param feat_names: the names of the features
         :param ran: the range of features that are plotted. By default it plots all the features
         """
         ran = ran if ran is not None else len(self.features[0])
+        if ran > len(self.features[0]):
+            ran = len(self.features[0])
         for i in range(1, ran):
             plt.plot(self.features[:, i], self.target, '.')
             theta0 = self.parameters[0]
@@ -72,7 +78,7 @@ class LinearRegression(object):
             xs = np.linspace(min(self.features[:, i]), max(self.features[:, i]), 100)
             ys = [theta0 + thetai * x for x in xs]  # this is the h function
             plt.plot(xs, ys, color='r')
-            plt.xlabel('Feature {}'.format(i))
+            plt.xlabel('{}'.format(self.feat_names[i-1]))
             plt.ylabel('PRICE')
             plt.title(title)
             plt.show()
@@ -91,7 +97,6 @@ class LinearRegression(object):
         """Calculates the coefficient of determination
         """
         enum = (self.target-self.h_function())**2
-        #average = np.sum(self.target) / self.num_examples
         denom = (self.target-np.mean(self.target))**2
         return 1 - np.sum(enum)/np.sum(denom)
 
@@ -118,7 +123,7 @@ class LinearRegression(object):
             cost_list.append(self.cost())
             self.update_parameters(learning_rate)
             if repetitions % freq_plots == 0:
-                self.plot_features_h('Iteration {}'.format(repetitions), ran)
+                self.plot_features_h('Iteration {}'.format(repetitions),ran)
             repetitions += 1
             if np.abs(cost_before - self.cost()) < 0.0001:  # tests convergence
                 self.plot_features_h('Convergence at iteration {}'.format(repetitions), ran)
@@ -159,6 +164,8 @@ if __name__ == "__main__":
 
     FEATURES = [CRIM, ZN, INDUS, CHAS, NOX, RM, AGE, DIS, RAD, TAX, PTRATIO, B, LSTAT]
     FEATURE_NAMES = ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']
+    INTER_NAMES = ['AGE+NOX', 'RAD+TAX', 'INDUS+NOX', 'RM+LSTAT', 'AGE+DIS', 'LSTAT+AGE', 'TAX+NOX', 'NOX+LSTAT',
+                   'INDUS+LSTAT', 'INDUS+DIS', 'INDUS+AGE', 'ZN+DIS', 'TAX+INDUS']
 
     def add_interaction(features, f1, f2):
         """
@@ -196,24 +203,26 @@ if __name__ == "__main__":
     f13 = add_interaction(f12, TAX, INDUS)
 
     # candidates for baseline
-    BASELINE1 = LinearRegression(RM, target)                # r2 = 0.48
-    BASELINE2 = LinearRegression(LSTAT, target)             # r2 = 0.54
-    BASELINE3 = LinearRegression(features, target)          # r2 = 0.74
+    BASELINE1 = LinearRegression(RM, target, ['RM'])                # r2 = 0.48
+    BASELINE2 = LinearRegression(LSTAT, target, ['LSTAT'])             # r2 = 0.54
+    BASELINE3 = LinearRegression(features, target, FEATURE_NAMES)          # r2 = 0.74
 
     # improvement #1
-    LOGDIS = LinearRegression(featureswlogdis, logtarget)   # r2 = 0.8000014145388733
+    LOGDIS = LinearRegression(featureswlogdis, logtarget, FEATURE_NAMES+['LOGDIS'])   # r2 = 0.8000014145388733
 
     # improvement #2
-    INTERACTIONS = LinearRegression(f13, logtarget)         # r2 = 0.8441889821747711
+    INTERACTIONS = LinearRegression(f13, logtarget, FEATURE_NAMES+['LOGDIS']+INTER_NAMES)  # r2 = 0.8441889821747711
 
     # Run gradient descent for the implementations and prints the coefficient of determination
+    # change the value of ran depending on how many plots you want to see.
+    # e.g. ran= 1 --> no plot ; ran=None --> all plots ; ran=4 --> first 3 features
     print('Coefficient of determination for BASELINE1:')
-    BASELINE1.gradient_descent(1.5, 600, 2)
+    BASELINE1.gradient_descent(1.5, 600, ran=1)
     print('Coefficient of determination for BASELINE2:')
-    BASELINE2.gradient_descent(1, 200, 2)
+    BASELINE2.gradient_descent(1, 200, ran=1)
     print('Coefficient of determination for BASELINE3:')
-    BASELINE3.gradient_descent(1, 900, 2)
+    BASELINE3.gradient_descent(1, 900, ran=1)
     print('Coefficient of determination for LOGDIS:')
-    LOGDIS.gradient_descent(1, 3000, 2)
+    LOGDIS.gradient_descent(1, 3000, ran=1)
     print('Coefficient of determination for INTERACTIONS:')
-    INTERACTIONS.gradient_descent(1.2, 10000, 2)   # takes around 20000 iterations
+    INTERACTIONS.gradient_descent(1.2, 10000, ran=1)   # takes around 20000 iterations
