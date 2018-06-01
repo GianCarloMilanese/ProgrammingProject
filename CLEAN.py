@@ -79,7 +79,7 @@ class LinearRegression(object):
             ys = [theta0 + thetai * x for x in xs]  # this is the h function
             plt.plot(xs, ys, color='r')
             plt.xlabel('{}'.format(self.feat_names[i-1]))
-            plt.ylabel('PRICE')
+            plt.ylabel('MEDV')
             plt.title(title)
             plt.show()
 
@@ -139,7 +139,7 @@ class LinearRegression(object):
         plt.xlabel('PREDICTED PRICES')
         plt.ylabel('ACTUAL PRICES')
         plt.show()
-        print(self.r2(), '\n')
+        print(self.r2())
 
 
 if __name__ == "__main__":
@@ -202,26 +202,37 @@ if __name__ == "__main__":
     f13 = add_interaction(f12, TAX, INDUS)
 
     # candidates for baseline
-    BASELINE1 = LinearRegression(RM, target, ['RM'])                # r2 = 0.4835253373442252
-    BASELINE2 = LinearRegression(LSTAT, target, ['LSTAT'])             # r2 = 0.5441462664295631
-    BASELINE3 = LinearRegression(features, target, FEATURE_NAMES)          # r2 = 0.7406074029262693
+    MEDVvsRM = LinearRegression(RM, target, ['RM'])                # r2 = 0.4835253373442252
+    MEDVvsLSTAT = LinearRegression(LSTAT, target, ['LSTAT'])             # r2 = 0.5441462664295631
+    MEDVvsALL = LinearRegression(features, target, FEATURE_NAMES)          # r2 = 0.7406074029262693
 
     # improvement #1
     LOGDIS = LinearRegression(featureswlogdis, logtarget, FEATURE_NAMES+['LOGDIS'])   # r2 = 0.8000014145388733
 
     # improvement #2
-    INTERACTIONS = LinearRegression(f13, logtarget, FEATURE_NAMES+['LOGDIS']+INTER_NAMES)  # r2 = 0.8441889821747711
+    INTER = LinearRegression(f13, logtarget, FEATURE_NAMES+['LOGDIS']+INTER_NAMES)  # r2 = 0.8441889821747711
 
     # Run gradient descent for the implementations and prints the coefficient of determination
+    # also shows that theta_0 = mean(target) if you uncomment the relevant line
     # change the value of ran depending on how many plots you want to see.
     # e.g. ran= 1 --> no plot ; ran=None --> all plots ; ran=4 --> first 3 features
-    print('Coefficient of determination for BASELINE1:')
-    BASELINE1.gradient_descent(1.5, 600, ran=1)
-    print('Coefficient of determination for BASELINE2:')
-    BASELINE2.gradient_descent(1, 200, ran=1)
-    print('Coefficient of determination for BASELINE3:')
-    BASELINE3.gradient_descent(1, 900, ran=1)
-    print('Coefficient of determination for LOGDIS:')
+    print('\nCoefficient of determination for MEDVvsRM:')
+    MEDVvsRM.gradient_descent(1.5, 600, ran=1)
+    print(MEDVvsRM.parameters[0], '=', np.mean(MEDVvsRM.target))
+
+    print('\nCoefficient of determination for MEDVvsLSTAT:')
+    MEDVvsLSTAT.gradient_descent(1, 200, ran=1)
+    print(MEDVvsLSTAT.parameters[0], '=', np.mean(MEDVvsLSTAT.target))
+
+    print('\nCoefficient of determination for MEDVvsALL:')
+    MEDVvsALL.gradient_descent(1, 900, ran=1)
+    print(MEDVvsALL.parameters[0], '=', np.mean(MEDVvsALL.target))
+
+    print('\nCoefficient of determination for LOGDIS:')
     LOGDIS.gradient_descent(1, 3000, ran=1)
-    print('Coefficient of determination for INTERACTIONS:')
-    INTERACTIONS.gradient_descent(1, 10000, ran=1)   # takes around 20000 iterations
+    print(LOGDIS.parameters[0], '=', np.mean(LOGDIS.target))
+
+    print('\nCoefficient of determination for INTER:')
+    INTER.gradient_descent(1, 10000, ran=1)   # takes around 20000 iterations
+    print(INTER.parameters[0], '=', np.mean(INTER.target))
+
