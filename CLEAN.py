@@ -218,21 +218,21 @@ if __name__ == "__main__":
     # e.g. ran= 1 --> no plot ; ran=None --> all plots ; ran=4 --> first 3 features
     print('\nCoefficient of determination for MEDVvsRM:')
     MEDVvsRM.gradient_descent(1.5, 600, ran=1)
-    print(MEDVvsRM.parameters[0], '=', np.mean(MEDVvsRM.target))
+    #print(MEDVvsRM.parameters[0], '=', np.mean(MEDVvsRM.target))
 
     print('\nCoefficient of determination for MEDVvsLSTAT:')
     MEDVvsLSTAT.gradient_descent(1, 200, ran=1)
-    print(MEDVvsLSTAT.parameters[0], '=', np.mean(MEDVvsLSTAT.target))
+    #print(MEDVvsLSTAT.parameters[0], '=', np.mean(MEDVvsLSTAT.target))
 
     print('\nCoefficient of determination for MEDVvsALL:')
     MEDVvsALL.gradient_descent(1, 900, ran=1)
-    print(MEDVvsALL.parameters[0], '=', np.mean(MEDVvsALL.target))
+    #print(MEDVvsALL.parameters[0], '=', np.mean(MEDVvsALL.target))
 
     print('\nCoefficient of determination for LOGDIS:')
     LOGDIS.gradient_descent(1, 3000, ran=1)
-    print(LOGDIS.parameters[0], '=', np.mean(LOGDIS.target))
+    #print(LOGDIS.parameters[0], '=', np.mean(LOGDIS.target))
 
     print('\nCoefficient of determination for INTER:')
     INTER.gradient_descent(1, 10000, ran=1)   # takes around 20000 iterations
-    print(INTER.parameters[0], '=', np.mean(INTER.target))
+    #print(INTER.parameters[0], '=', np.mean(INTER.target))
 
