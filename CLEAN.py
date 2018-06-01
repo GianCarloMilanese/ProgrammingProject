@@ -169,7 +169,6 @@ if __name__ == "__main__":
 
     def add_interaction(features, f1, f2):
         """
-
         :param features: a matrix of features
         :param f1: a feature array
         :param f2: a feature array
@@ -182,7 +181,7 @@ if __name__ == "__main__":
 
     # log of target
     logtarget = np.log(target)
-    # lof of DIS
+    # log of DIS
     logdis = np.log(DIS)
     # features + log of DIS
     featureswlogdis = np.append(features, logdis, 1)
@@ -203,9 +202,9 @@ if __name__ == "__main__":
     f13 = add_interaction(f12, TAX, INDUS)
 
     # candidates for baseline
-    BASELINE1 = LinearRegression(RM, target, ['RM'])                # r2 = 0.48
-    BASELINE2 = LinearRegression(LSTAT, target, ['LSTAT'])             # r2 = 0.54
-    BASELINE3 = LinearRegression(features, target, FEATURE_NAMES)          # r2 = 0.74
+    BASELINE1 = LinearRegression(RM, target, ['RM'])                # r2 = 0.4835253373442252
+    BASELINE2 = LinearRegression(LSTAT, target, ['LSTAT'])             # r2 = 0.5441462664295631
+    BASELINE3 = LinearRegression(features, target, FEATURE_NAMES)          # r2 = 0.7406074029262693
 
     # improvement #1
     LOGDIS = LinearRegression(featureswlogdis, logtarget, FEATURE_NAMES+['LOGDIS'])   # r2 = 0.8000014145388733
@@ -225,4 +224,4 @@ if __name__ == "__main__":
     print('Coefficient of determination for LOGDIS:')
     LOGDIS.gradient_descent(1, 3000, ran=1)
     print('Coefficient of determination for INTERACTIONS:')
-    INTERACTIONS.gradient_descent(1.2, 10000, ran=1)   # takes around 20000 iterations
+    INTERACTIONS.gradient_descent(1, 10000, ran=1)   # takes around 20000 iterations
