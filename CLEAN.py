@@ -61,7 +61,7 @@ class LinearRegression(object):
                                       learning_rate*self.cost_der(i))
         self.parameters = np.array(new_parameter_list)
 
-    def plot_features_h(self, title='', ran=None ):
+    def plot_features_h(self, title='', ran=None):
         """ Shows plots of features and of the hypothesis function wrt that feature
 
         :param title: title of the plot
